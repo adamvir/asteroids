@@ -2,6 +2,7 @@ import pygame
 from circleshape import CircleShape, PLAYER_RADIUS
 from constants import PLAYER_TURN_SPEED, PLAYER_MOVE_SPEED, PLAYER_SHOOT_COOLDOWN
 from shot import Shot
+from score import Score
 class Player(CircleShape):
 
     def __init__(self, x, y):
@@ -31,7 +32,11 @@ class Player(CircleShape):
     def shoot(self, dt):
             return Shot(self.position, self.rotation)
 
-
+    def gameover(self):
+        if self.position.x < 0 or self.position.y < 0 or self.position.x > 1280 or self.position.y > 720:
+            print("Game Over!")
+            raise SystemExit
+        
     def update(self, dt):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
