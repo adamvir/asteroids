@@ -8,18 +8,19 @@ class Player(CircleShape):
         self.x = x
         self.y = y
         super().__init__(x, y, PLAYER_RADIUS)
+        self.image_original = pygame.image.load("spaceship.png").convert_alpha()
+        self.image_original = pygame.transform.scale(self.image_original, (100, 100))
+        self.image = self.image_original
+        self.rect = self.image.get_rect(center=self.position)
         self.rotation = 0
         self.timer = 0
         # in the player class
-    def triangle(self):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
-        return [a, b, c]
     def draw(self, screen):
-        pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        rotated_image = pygame.transform.rotate(self.image_original, -self.rotation + 180)
+        rotated_rect = rotated_image.get_rect(center=self.position)
+
+        # Kirajzolás
+        screen.blit(rotated_image, rotated_rect.topleft)
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -45,7 +46,6 @@ class Player(CircleShape):
             if self.timer == 0:
                 self.shoot(dt)
                 self.timer = PLAYER_SHOOT_COOLDOWN
-                print(f"{dt}")
             elif self.timer > 0:
                 exit
         if self.timer > 0:
